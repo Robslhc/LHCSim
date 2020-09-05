@@ -175,20 +175,21 @@ class fluid:
                 self.c_z[p] = vec3(0.0, 0.0, 0.0)
 
         # init field
-        for i, j, k in self.u:
-            self.u[i, j, k] = 0.0
-            self.u_weight[i, j, k] = 0.0
+        if ti.static(self.sim_algo != 'MPM'):
+            for i, j, k in self.u:
+                self.u[i, j, k] = 0.0
+                self.u_weight[i, j, k] = 0.0
 
-        for i, j, k in self.v:
-            self.v[i, j, k] = 0.0
-            self.v_weight[i, j, k] = 0.0
+            for i, j, k in self.v:
+                self.v[i, j, k] = 0.0
+                self.v_weight[i, j, k] = 0.0
 
-        for i, j, k in self.w:
-            self.w[i, j, k] = 0.0
-            self.w_weight[i, j, k] = 0.0
+            for i, j, k in self.w:
+                self.w[i, j, k] = 0.0
+                self.w_weight[i, j, k] = 0.0
 
-        for i, j, k in self.p:
-            self.p[i, j, k] = 0.0
+            for i, j, k in self.p:
+                self.p[i, j, k] = 0.0
 
     def output_PLY(self, frame_id):
         np_px = self.px.to_numpy().copy()

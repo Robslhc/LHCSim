@@ -1,10 +1,11 @@
 import taichi as ti
 import numpy as np
-from geometry import cube
+from geometry import cube, sphere
 from fluid import fluid
 from simulation import simulation
 from utils import *
 import argparse
+import math
 
 ti.init(arch=ti.cpu, default_fp=ti.f32)
 
@@ -44,6 +45,26 @@ def create_fluidDamBreak(gp, algo, psolver=None, flip_blending=None):
     return sim
 
 
+def create_fluidSphereFall(gp, algo, psolver=None, flip_blending=None):
+    # define fluid object
+    fluid_geom = sphere(5, 5, 5, 3)
+    fluid_obj = fluid(geometry=fluid_geom,
+                      simulation_algorithm=algo,
+                      grid_res=gp['grid_res'],
+                      particle_res=gp['particle_res'],
+                      render_type='PLY',
+                      pressure_solver=psolver,
+                      flip_blending=flip_blending)
+
+    # define scene
+    sim = simulation(gp['world'],
+                     gp['bound_grid'],
+                     gp['grid_res'], [fluid_obj],
+                     render_algo='PLY')
+
+    return sim
+
+
 def main(args):
     # global parameters with default value
     scene = args.scene
@@ -53,7 +74,7 @@ def main(args):
     bound_grid = 3
     video_t = 10
     substeps = 20
-    dt = 0.001
+    dt = 0.01
 
     if args.worldSize:
         world = int(args.worldSize)
@@ -90,6 +111,19 @@ def main(args):
             else:
                 sim = create_fluidDamBreak(gp, args.fluidAlgo,
                                            args.fluidPSolver)
+    elif scene == 'FluidSphereFall':
+        if args.fluidAlgo == 'MPM':
+            sim = create_fluidSphereFall(gp, args.fluidAlgo)
+        else:
+            assert args.fluidPSolver is not None
+            if args.fluidAlgo == 'PIC-FLIP':
+                assert args.fluidFLIPBlending is not None
+                sim = create_fluidSphereFall(gp, args.fluidAlgo,
+                                             args.fluidPSolver,
+                                             float(args.fluidFLIPBlending))
+            else:
+                sim = create_fluidSphereFall(gp, args.fluidAlgo,
+                                             args.fluidPSolver)
     else:
         print("Scene {} not supported.".format(scene))
         exit()
@@ -112,8 +146,12 @@ def main(args):
         for i, obj in enumerate(sim.obj_list):
             pv = obj.pv.to_numpy()
             max_vel = np.max(np.linalg.norm(pv, 2, axis=1))
-            print("obj {}, time = {}, dt = {}, maxv = {}".format(
-                i, t, dt, max_vel))
+            if not math.isnan(max_vel):
+                print("obj {}, time = {}, dt = {}, maxv = {}".format(
+                    i, t, dt, max_vel))
+            else:
+                print("Numerical Error occured!")
+                exit()
 
         sim.render(frame)
 
