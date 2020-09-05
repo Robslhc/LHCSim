@@ -18,16 +18,22 @@ parser.add_argument('--videoSec',
                     help='Sepecify the total length of the output video')
 parser.add_argument('--subSteps', help='Set the simulation substeps per frame')
 parser.add_argument('--fluidAlgo', help='Set the fluid simulation algorithm')
+parser.add_argument('--fluidPSolver',
+                    help='Pressure solver of fluid simulation')
+parser.add_argument('--fluidFLIPBlending',
+                    help='Specifying the flip blending of PIC-FLIP Algorithm')
 
 
-def create_fluidDamBreak(gp, algo):
+def create_fluidDamBreak(gp, algo, psolver=None, flip_blending=None):
     # define fluid object
     fluid_geom = cube(0, 6, 0, 6, 0, 6)
     fluid_obj = fluid(geometry=fluid_geom,
                       simulation_algorithm=algo,
                       grid_res=gp['grid_res'],
                       particle_res=gp['particle_res'],
-                      render_type='PLY')
+                      render_type='PLY',
+                      pressure_solver=psolver,
+                      flip_blending=flip_blending)
 
     # define scene
     sim = simulation(gp['world'],
@@ -72,8 +78,18 @@ def main(args):
     }
 
     if scene == 'FluidDamBreak':
-        assert args.fluidAlgo is not None
-        sim = create_fluidDamBreak(gp, args.fluidAlgo)
+        if args.fluidAlgo == 'MPM':
+            sim = create_fluidDamBreak(gp, args.fluidAlgo)
+        else:
+            assert args.fluidPSolver is not None
+            if args.fluidAlgo == 'PIC-FLIP':
+                assert args.fluidFLIPBlending is not None
+                sim = create_fluidDamBreak(gp, args.fluidAlgo,
+                                           args.fluidPSolver,
+                                           float(args.fluidFLIPBlending))
+            else:
+                sim = create_fluidDamBreak(gp, args.fluidAlgo,
+                                           args.fluidPSolver)
     else:
         print("Scene {} not supported.".format(scene))
         exit()
