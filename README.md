@@ -43,3 +43,4 @@ Demo gif needed!
 [2] Harlow, F.H. 1962. The particle-in-cell method for numerical solution of problems in fluid dynamics.
 [3] Brackbill, J.U. and Ruppel, H.M. 1986. FLIP: A method for adaptively zoned, particle-in-cell calculations of fluid flows in two dimensions. Journal of Computational Physics 65, 2, 314–343.
 [4] Jiang, C., Schroeder, C., Selle, A., Teran, J., and Stomakhin, A. 2015. The Affine Particle-in-Cell Method. ACM Trans. Graph. 34, 4.
+[5] McAdams, A., Sifakis, E., and Teran, J. 2010. A parallel multigrid Poisson solver for fluids simulation on large grids. Computer Animation 2010 - ACM SIGGRAPH / Eurographics Symposium Proceedings, SCA 2010, Eurographics Association, 65–73.
