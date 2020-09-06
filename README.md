@@ -34,9 +34,10 @@ Note:
 + When the simulation algorithm is PIC / FLIP / PIC-FLIP / APIC, specify the pressure solver by setting --fluidPSolver.
 + When the simulation algorithm is PIC-FLIP, specify the FLIP blending paramater by setting --fluidFLIPBlending.
 #### FluidDamBreak
-Demo gif needed!
-#### FluidSphereFall
-Demo gif needed!
+![](demos/FluidDamBreak/DambreakAPIC.gif)
+
+See other demos [here](./demos/FluidDambreak/).
+#### FluidSphereFall(WIP)
 
 ## Reference
 [1]Hu, Y., Fang, Y., Ge, Z., et al. 2018. A Moving Least Squares Material Point Method with Displacement Discontinuity and Two-Way Rigid Body Coupling. ACM Trans. Graph. 37, 4.
