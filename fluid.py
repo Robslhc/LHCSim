@@ -481,18 +481,15 @@ class fluid:
         fx = xp * inv_dx - (base.cast(ti.f32) + stagger)
         w = [0.5 * (1.5 - fx)**2, 0.75 - (fx - 1)**2,
              0.5 * (fx - 0.5)**2]  # Bspline
-        w_grad = [fx - 1.5, -2 * (fx - 1), fx - 3.5]  # Bspline gradient
         new_v = 0.0
         new_c = vec3(0.0, 0.0, 0.0)
 
         for i, j, k in ti.static(ti.ndrange(3, 3, 3)):
             offset = vec3(i, j, k)
+            dpos = offset.cast(ti.f32) - fx
             weight = w[i][0] * w[j][1] * w[k][2]
-            weight_grad = vec3(w_grad[i][0] * w[j][1] * w[k][2],
-                               w[i][0] * w_grad[j][1] * w[k][2],
-                               w[i][0] * w[j][1] * w_grad[k][2])
             new_v += weight * grid_v[base + offset]
-            new_c += weight_grad * grid_v[base + offset]
+            new_c += 4 * weight * dpos * grid_v[base + offset] * inv_dx
 
         return new_v, new_c
 

@@ -74,7 +74,7 @@ def main(args):
     bound_grid = 3
     video_t = 10
     substeps = 20
-    dt = 0.01
+    dt = 0.001
 
     if args.worldSize:
         world = int(args.worldSize)
