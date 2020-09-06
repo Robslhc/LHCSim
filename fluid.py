@@ -500,6 +500,7 @@ class fluid:
 
         for p in self.px:
             xp = self.px[p]
+            vp = self.pv[p]
 
             if ti.static(self.sim_algo == 'APIC'):
                 self.pv[p].x, self.c_x[p] = self.MAC_G2P_onedir_apic(
@@ -510,20 +511,20 @@ class fluid:
                     dx, stagger_w, xp, self.w)
             elif ti.static(self.sim_algo == 'FLIP'):
                 self.pv[p].x = self.MAC_G2P_onedir_flip(
-                    dx, stagger_u, xp, self.u, self.u_last, self.pv[p].x, 1.0)
+                    dx, stagger_u, xp, self.u, self.u_last, vp.x, 1.0)
                 self.pv[p].y = self.MAC_G2P_onedir_flip(
-                    dx, stagger_v, xp, self.v, self.v_last, self.pv[p].y, 1.0)
+                    dx, stagger_v, xp, self.v, self.v_last, vp.y, 1.0)
                 self.pv[p].z = self.MAC_G2P_onedir_flip(
-                    dx, stagger_w, xp, self.w, self.w_last, self.pv[p].z, 1.0)
+                    dx, stagger_w, xp, self.w, self.w_last, vp.z, 1.0)
             elif ti.static(self.sim_algo == 'PIC-FLIP'):
                 self.pv[p].x = self.MAC_G2P_onedir_flip(
-                    dx, stagger_u, xp, self.u, self.u_last, self.pv[p].x,
+                    dx, stagger_u, xp, self.u, self.u_last, vp.x,
                     self.FLIP_BLENDING)
                 self.pv[p].y = self.MAC_G2P_onedir_flip(
-                    dx, stagger_v, xp, self.v, self.v_last, self.pv[p].y,
+                    dx, stagger_v, xp, self.v, self.v_last, vp.y,
                     self.FLIP_BLENDING)
                 self.pv[p].z = self.MAC_G2P_onedir_flip(
-                    dx, stagger_w, xp, self.w, self.w_last, self.pv[p].z,
+                    dx, stagger_w, xp, self.w, self.w_last, vp.z,
                     self.FLIP_BLENDING)
             else:
                 self.pv[p].x = self.MAC_G2P_onedir(dx, stagger_u, xp, self.u)

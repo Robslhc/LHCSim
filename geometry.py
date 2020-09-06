@@ -35,13 +35,13 @@ class cube:
                         for kx in range(npar):
                             xp = clamp(
                                 i * dx + (ix + random.random()) * space_x,
-                                bound, world - bound)
+                                bound + 1e-4, world - bound - 1e-4)
                             yp = clamp(
                                 j * dx + (jx + random.random()) * space_x,
-                                bound, world - bound)
+                                bound + 1e-4, world - bound - 1e-4)
                             zp = clamp(
                                 k * dx + (kx + random.random()) * space_x,
-                                bound, world - bound)
+                                bound + 1e-4, world - bound - 1e-4)
 
                             px[particle_idx(i, j, k, ix, jx, kx, n_grid,
                                             npar)] = vec3(xp, yp, zp)
@@ -74,13 +74,13 @@ class sphere:
                         for kx in range(npar):
                             xp = clamp(
                                 i * dx + (ix + random.random()) * space_x,
-                                bound, world - bound)
+                                bound + 1e-4, world - bound - 1e-4)
                             yp = clamp(
                                 j * dx + (jx + random.random()) * space_x,
-                                bound, world - bound)
+                                bound + 1e-4, world - bound - 1e-4)
                             zp = clamp(
                                 k * dx + (kx + random.random()) * space_x,
-                                bound, world - bound)
+                                bound + 1e-4, world - bound - 1e-4)
 
                             px[particle_idx(i, j, k, ix, jx, kx, n_grid,
                                             npar)] = vec3(xp, yp, zp)

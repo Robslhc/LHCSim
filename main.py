@@ -86,7 +86,7 @@ def main(args):
         particle_res = int(args.particleRes)
 
     if args.videoSec:
-        video_t = int(args.video_t)
+        video_t = int(args.videoSec)
 
     if args.subSteps:
         substeps = int(args.subSteps)
