@@ -383,15 +383,16 @@ class fluid:
     def MAC_P2G_onedir_apic(self, dx, stagger, xp, vp, cp, grid_v, grid_m):
         inv_dx = 1 / dx
 
-        base = (xp * inv_dx - (stagger + 0.5)).cast(ti.i32)
-        fx = xp * inv_dx - (base.cast(ti.f32) + stagger)
-        w = [0.5 * (1.5 - fx)**2, 0.75 - (fx - 1)**2,
-             0.5 * (fx - 0.5)**2]  # Bspline
+        # use trilinear interpolation kernel
+        base = (xp * inv_dx - stagger).cast(ti.i32)
+        new_v = 0.0
+        new_c = vec3(0.0, 0.0, 0.0)
 
-        for i, j, k in ti.static(ti.ndrange(3, 3, 3)):
+        for i, j, k in ti.static(ti.ndrange(2, 2, 2)):
             offset = vec3(i, j, k)
-            weight = w[i][0] * w[j][1] * w[k][2]
-            dpos = (offset.cast(ti.f32) - fx) * dx
+            fx = xp * inv_dx - (base + offset + stagger)
+            dpos = fx * dx
+            weight = (1 - abs(fx.x)) * (1 - abs(fx.y)) * (1 - abs(fx.z))
             grid_v[base + offset] += weight * (vp + cp.dot(dpos))
             grid_m[base + offset] += weight
 
@@ -476,18 +477,16 @@ class fluid:
     def MAC_G2P_onedir_apic(self, dx, stagger, xp, grid_v):
         inv_dx = 1 / dx
 
-        # x direction
-        base = (xp * inv_dx - (stagger + 0.5)).cast(ti.i32)
-        fx = xp * inv_dx - (base.cast(ti.f32) + stagger)
-        w = [0.5 * (1.5 - fx)**2, 0.75 - (fx - 1)**2,
-             0.5 * (fx - 0.5)**2]  # Bspline
+        # use trilinear interpolation kernel
+        base = (xp * inv_dx - stagger).cast(ti.i32)
         new_v = 0.0
         new_c = vec3(0.0, 0.0, 0.0)
 
-        for i, j, k in ti.static(ti.ndrange(3, 3, 3)):
+        for i, j, k in ti.static(ti.ndrange(2, 2, 2)):
             offset = vec3(i, j, k)
-            dpos = offset.cast(ti.f32) - fx
-            weight = w[i][0] * w[j][1] * w[k][2]
+            fx = xp * inv_dx - (base + offset + stagger)
+            dpos = fx
+            weight = (1 - abs(fx.x)) * (1 - abs(fx.y)) * (1 - abs(fx.z))
             new_v += weight * grid_v[base + offset]
             new_c += 4 * weight * dpos * grid_v[base + offset] * inv_dx
 
