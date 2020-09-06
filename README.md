@@ -36,7 +36,7 @@ Note:
 #### FluidDamBreak
 ![](demos/FluidDamBreak/DambreakAPIC.gif)
 
-See other demos [here](./demos/FluidDambreak/).
+See other demos [here](https://github.com/Robslhc/LHCSim/tree/sphere/demos/FluidDamBreak).
 #### FluidSphereFall(WIP)
 
 ## Reference
