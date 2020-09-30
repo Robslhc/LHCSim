@@ -5,9 +5,10 @@ import os
 
 @ti.data_oriented
 class PLY_renderer:
-    def __init__(self, px, output_dir):
+    def __init__(self, px, output_dir, output_prefix):
         self.px = px
         self.output_dir = output_dir
+        self.output_prefix = output_prefix
 
         self.particle_positions = []
         self.particle_material = []
@@ -32,8 +33,8 @@ class PLY_renderer:
             out_px = np_px[start:end]
             nparticles = end - start
 
-            series_prefix = '{}/PLY/mpm_mat{}.ply'.format(
-                self.output_dir, self.particle_material[i])
+            series_prefix = '{}/PLY/{}_mat{}.ply'.format(
+                self.output_dir, self.output_prefix, self.particle_material[i])
 
             writer = ti.PLYWriter(num_vertices=nparticles)
             writer.add_vertex_pos(out_px[:, 0], out_px[:, 1], out_px[:, 2])

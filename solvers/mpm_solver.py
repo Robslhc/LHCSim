@@ -1,10 +1,6 @@
 import taichi as ti
 import numpy as np
-
-
-@ti.pyfunc
-def clamp(x, a, b):
-    return max(a, min(b, x))
+from utils import clamp
 
 
 @ti.data_oriented

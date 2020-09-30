@@ -2,6 +2,7 @@ import taichi as ti
 import numpy as np
 from geometry import cube, sphere
 from solvers.mpm_solver import mpm_solver
+from solvers.pic_solver import pic_solver
 from renderer.PLY_renderer import PLY_renderer
 import argparse
 import math
@@ -32,7 +33,6 @@ def main(args):
     particle_res = 2
     bound_grid = 3
     video_t = 10
-    substeps = 20
     frame_dt = 0.01
 
     if args.worldSize:
@@ -50,26 +50,32 @@ def main(args):
     if scene in ['FluidDamBreak']:
         if args.fluidAlgo == 'MPM':
             solver = mpm_solver(world, grid_res, bound_grid)
+            mat = mpm_solver.material_water
+        elif args.fluidAlgo == 'PIC':
+            solver = pic_solver(world, grid_res, bound_grid)
+            mat = pic_solver.FLUID
         else:
             print("Algorithm {} not supported".format(args.fluidAlgo))
             exit()
 
         # render define
         renderer = PLY_renderer(px=solver.x,
-                                output_dir=os.path.join(os.getcwd(), 'result'))
+                                output_dir=os.path.join(os.getcwd(), 'result'),
+                                output_prefix=args.fluidAlgo)
 
         if scene == 'FluidDamBreak':
             nstart = solver.n_particles[None]
             solver.add_object(cube(0, 6, 0, 6, 0, 6),
-                              mpm_solver.material_water,
+                              mat,
                               par_res=particle_res)
             nend = solver.n_particles[None]
-            renderer.add_object(nstart, nend, mpm_solver.material_water)
+            renderer.add_object(nstart, nend, mat)
     else:
         print("Scene {} not supported".format(scene))
         exit()
 
     # start simulate
+    renderer.output_PLY(0)
     t = 0.0
     for frame in range(1, 24 * video_t):
         solver.step(frame_dt)
