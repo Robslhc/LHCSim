@@ -3,6 +3,7 @@ import numpy as np
 from geometry import cube, sphere
 from solvers.mpm_solver import mpm_solver
 from solvers.pic_solver import pic_solver
+from solvers.flip_solver import flip_solver
 from renderer.PLY_renderer import PLY_renderer
 import argparse
 import math
@@ -53,6 +54,13 @@ def main(args):
             mat = mpm_solver.material_water
         elif args.fluidAlgo == 'PIC':
             solver = pic_solver(world, grid_res, bound_grid)
+            mat = pic_solver.FLUID
+        elif args.fluidAlgo == 'FLIP':
+            if not args.fluidFLIPBlending:
+                blending = 1.0
+            else:
+                blending = float(args.fluidFLIPBlending)
+            solver = flip_solver(world, grid_res, bound_grid, flip_blending=blending)
             mat = pic_solver.FLUID
         else:
             print("Algorithm {} not supported".format(args.fluidAlgo))
