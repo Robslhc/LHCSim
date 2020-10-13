@@ -34,7 +34,7 @@ def main(args):
     particle_res = 2
     bound_grid = 3
     video_t = 10
-    frame_dt = 0.01
+    frame_dt = 0.02
 
     if args.worldSize:
         world = int(args.worldSize)
@@ -82,6 +82,8 @@ def main(args):
         print("Scene {} not supported".format(scene))
         exit()
 
+    solver.solver_init()
+
     # start simulate
     renderer.output_PLY(0)
     t = 0.0
@@ -91,7 +93,7 @@ def main(args):
 
         # display simulation result
         print("frame {}: ".format(frame))
-        pv = solver.v.to_numpy()
+        pv = solver.pv.to_numpy()
         max_vel = np.max(np.linalg.norm(pv, 2, axis=1))
         if not math.isnan(max_vel):
             print("time = {}, dt = {}, maxv = {}".format(t, frame_dt, max_vel))

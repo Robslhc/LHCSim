@@ -125,7 +125,7 @@ class pic_solver:
 
         # mark boundary
         for i, j, k in self.cell_type:
-            if i < self.bound or i > self.n_grid - self.bound or j < self.bound or j > self.n_grid - self.bound or k < self.bound or k > self.n_grid - self.bound:
+            if i < self.bound or i >= self.n_grid - self.bound or j < self.bound or j >= self.n_grid - self.bound or k < self.bound or k >= self.n_grid - self.bound:
                 self.cell_type[i, j, k] = self.SOLID
 
     def solver_init(self):
@@ -189,6 +189,9 @@ class pic_solver:
 
             # grid op
             self.apply_gravity(dt)
+            self.grid_bounding_box()
+
+            self.extrapolate_velocity()
             self.grid_bounding_box()
 
             self.solve_pressure(dt)
