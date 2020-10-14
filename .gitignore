@@ -130,3 +130,6 @@ dmypy.json
 
 # Simulation Output 
 result
+
+# Scripts
+*.slurm
